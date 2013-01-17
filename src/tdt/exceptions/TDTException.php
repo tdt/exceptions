@@ -44,7 +44,8 @@ class TDTException extends \Exception{
         }else{
             if(isset($config["log_dir"])){
                 $log = new Logger('error_handler');
-                $log->pushHandler(new StreamHandler($config["log_dir"], Logger::CRITICAL));
+                $log_dir = rtrim($this->config["log_dir"], "/");                
+                $log->pushHandler(new StreamHandler($log_dir . "/log_". date('Y-m-d') . ".txt", Logger::CRITICAL));                
                 $log->addCritical("Could not find an exception with errorcode " . $errorcode . ".");                
             }
             
