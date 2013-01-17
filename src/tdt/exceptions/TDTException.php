@@ -9,12 +9,21 @@
 
 namespace tdt\exceptions;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 class TDTException extends \Exception{
 
     private $errorcode,$exceptionini;
     private $parameters;
-
-    public function __construct($errorcode, array $parameters){
+    private $config;
+    /*
+     * The config interprets the following keys:
+     * url : The url to redirect the user when an exception is thrown
+     * log_dir : The directory in which to log errors that occur in this class.      
+     */
+    public function __construct($errorcode, array $parameters,array $config = array()){
+        $this->config = $config;
         $this->errorcode = $errorcode;
         $this->parameters = $parameters;
         $exceptions = parse_ini_file("exceptions.ini",true);
@@ -33,8 +42,16 @@ class TDTException extends \Exception{
                 }
             }
         }else{
-            Log::getInstance()->logCrit("Could not find an exception with errorcode " . $errorcode . ".");
-            header("Location: " . Config::get("general","hostname") . Config::get("general","subdir") . "error/critical");
+            if(isset($config["log_dir"])){
+                $log = new Logger('error_handler');
+                $log->pushHandler(new StreamHandler($config["log_dir"], Logger::CRITICAL));
+                $log->addCritical("Could not find an exception with errorcode " . $errorcode . ".");                
+            }
+            
+            if(isset($config["url"])){      
+                $url = rtrim($config["url"], "/");
+                header("Location: " . $url . "/critical");
+            }                       
         }
         parent::__construct($this->getMsg(),$errorcode);
     }
@@ -65,6 +82,11 @@ class TDTException extends \Exception{
     }
 
     public function getURL(){
-        return Config::get("general","hostname") . Config::get("general","subdir") . "error/" . $this->getCode() . "/?problem=". urlencode($this->getMsg());
+        if(isset($this->config["url"])){
+            $url = rtrim($this->config["url"],"/");
+            return $url . "/" . $this->getCode() . "/?problem=". urlencode($this->getMsg());   
+        }else{
+            return "";
+        }        
     }
 }
