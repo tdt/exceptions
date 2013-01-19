@@ -19,8 +19,9 @@ class TDTException extends \Exception{
     private $config;
     /*
      * The config interprets the following keys:
+     *  log_dir : The directory in which to log errors that occur in this class.      
      * url : The url to redirect the user when an exception is thrown
-     * log_dir : The directory in which to log errors that occur in this class.      
+     *
      */
     public function __construct($errorcode, array $parameters,array $config = array()){
         $this->config = $config;
