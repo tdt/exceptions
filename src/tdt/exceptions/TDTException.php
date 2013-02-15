@@ -47,7 +47,7 @@ class TDTException extends \Exception{
                 $log = new Logger('error_handler');
                 $log_dir = rtrim($this->config["log_dir"], "/");                
                 $log->pushHandler(new StreamHandler($log_dir . "/log_". date('Y-m-d') . ".txt", Logger::CRITICAL));                
-                $log->addCritical("Could not find an exception with errorcode " . $errorcode . ".");                
+                $log->addCritical("Could not find an exception with errorcode " . $this->errorcode . ".");                
             }
             
             if(isset($config["url"])){      
@@ -62,21 +62,21 @@ class TDTException extends \Exception{
         if(isset($this->exceptionini["message"]))
             return $this->exceptionini["message"];
         else
-            return "-- Please set a message in your exceptions.ini for exception " . $errorcode . "--";
+            return "-- Please set a message in your exceptions.ini for exception " . $this->errorcode . "--";
     }
 
     public function getShort(){
         if(isset($this->exceptionini["short"]))
             return $this->exceptionini["short"];
         else
-            return "-- Please set a short in your exceptions.ini for exception " . $errorcode . "--";
+            return "-- Please set a short in your exceptions.ini for exception " . $this->errorcode . "--";
     }
     
     public function getDocumentation(){
         if(isset($this->exceptionini["documentation"]))
             return $this->exceptionini["documentation"];
         else
-            return "-- Please set documentation in your exceptions.ini for exception " . $errorcode . " --";
+            return "-- Please set documentation in your exceptions.ini for exception " . $this->errorcode . " --";
     }
     
     public function getParameters(){
