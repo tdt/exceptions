@@ -23,7 +23,7 @@ class TDTException extends \Exception{
      * url : The url to redirect the user when an exception is thrown
      *
      */
-    public function __construct($errorcode, array $parameters,array $config = array()){
+    public function __construct($errorcode, array $parameters = array(),array $config = array()){
         $this->config = $config;
         $this->errorcode = $errorcode;
         $this->parameters = $parameters;
